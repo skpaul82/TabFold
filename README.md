@@ -1,33 +1,49 @@
 # TabFold
 
-Browser-style tab groups for VS Code: group, name, color and collapse editor tabs the way Chrome does. Groups show up on the
-editor tab bar and, if you want, in a sidebar.
+**Browser-style tab groups for VS Code.** Group, name, color and collapse your editor tabs, the way tab groups work in Chrome. No network, no telemetry and no runtime dependencies, so you can trust it with work code.
+
+[![CI](https://github.com/skpaul82/TabFold/actions/workflows/ci.yml/badge.svg)](https://github.com/skpaul82/TabFold/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/skpaul82/TabFold/blob/main/LICENSE)
+
+<!-- Demo GIF goes here: group → collapse → expand. Store it outside media/ (e.g. .github/assets/demo.gif) so it isn't shipped in the VSIX, and link it with an absolute https://raw.githubusercontent.com/... URL. -->
+
+## Why TabFold
+
+- **Fold away what you're not working on.** Collapse a group and its tabs close. Expand it and they come back, in order.
+- **See your context at a glance.** Each group gets a header tab (`▾ API`) and its own color on the tab bar.
+- **Private by design.** TabFold never touches the network, never reads your files, and ships no third-party code. [Details below](#security--privacy).
+
+## Getting started
+
+1. Right-click any editor tab → **Add Tab to New Group**.
+2. Type a name, pick a color with the arrow keys, and press Enter.
+3. Click the group's header tab (`▾ Name`) to collapse it. Click it again to expand.
 
 ## Using it
 
 | Want to… | Do this |
 |---|---|
-| Make a group | Right-click a tab → **Add Tab to New Group**, or press `Cmd/Ctrl+K G` |
-| Name and color it | Type a name, arrow to a color, press Enter (same picker as Chrome's group bubble) |
-| Add a tab to a group | Right-click the tab → **Add Tab to Group…**, drag it between two tabs of the group, or drag it onto the group in the sidebar |
+| Make a group | Right-click a tab → **Add Tab to New Group**. Or press `Cmd/Ctrl+K G` and choose a new group |
+| Add a tab to a group | Right-click it → **Add Tab to Group…**, drag it between two tabs of the group, or drop it on the group in the sidebar |
 | Take a tab out | Drag it out of the group's block, or right-click → **Remove Tab from Group** |
-| Collapse / expand | Click the group's **header tab** (`▾ Name`), use the sidebar fold button, or press `Cmd/Ctrl+K Alt+G` |
-| Jump between groups | Click the status bar chip, or press `Cmd/Ctrl+K Shift+G` |
-| Keep a group for later | Sidebar → right-click → **Save Group**. Restore it from **Saved Groups**, from any workspace |
-| Put the panel on the right | Drag the **Tab Groups** icon to the Secondary Side Bar |
+| Collapse / expand | Click the header tab, use the fold button in the sidebar, or press `Cmd/Ctrl+K Alt+G` |
+| Rename or recolor | Right-click the group in the sidebar → **Edit Group (Name & Color)…** |
+| Jump between groups | Click the group chip in the status bar, or press `Cmd/Ctrl+K Shift+G` |
+| Keep a group for later | Sidebar → right-click → **Save Group**. Restore it from **Saved Groups**, in any workspace |
+| Undo | Ungroup, Close Group and Ungroup All show an **Undo** button |
+| Move the panel to the right | Drag the **Tab Groups** icon to the Secondary Side Bar |
 
-### How the tab bar works
-VS Code doesn't let extensions draw custom chips in the tab bar, so this extension builds them out of
-features VS Code does allow:
+## How it works
 
-- **Header tab:** a small tab titled `▾ Backend` sits in front of each group. Click it to collapse the group (`▸ Backend (5)`) and click it again to expand.
-- **Contiguous tabs:** tabs in the same group are kept next to each other.
-- **One split per group:** drag a group's header to another split and its tabs follow. Drag all of its tabs and the header follows. Drag a single tab to another split and it leaves the group, like dragging a tab to another Chrome window.
-- **Color and badge:** grouped tab titles are drawn in the group color and get a badge (the group's first letter).
-- **Collapse closes the group's tabs and remembers them.** Expanding reopens them in order. If any tab has unsaved changes, you're asked to save first.
-- **Undo:** Ungroup, Close Group and Ungroup All show a notification with an **Undo** button that brings the group back. Close Group's undo reopens the tabs.
+VS Code doesn't let extensions draw custom chips on the tab bar, so TabFold builds groups from features VS Code does allow:
 
-Tab colors and badges depend on `workbench.editor.decorations.colors` and `workbench.editor.decorations.badges`. Both are on by default.
+- **Header tab:** a small tab titled `▾ Backend` sits in front of each group. Collapsed, it shows `▸ Backend (5)`.
+- **Tabs stay together:** a group's tabs are kept next to each other, header first, in every editor split.
+- **One split per group:** drag a group's header to another split and its tabs follow. Drag all of its tabs and the header follows. Drag a single tab to another split and it leaves the group, like dragging a tab to another browser window.
+- **Color and badge:** grouped tab titles use the group's color and get a badge (the group's first letter, a dot, or nothing).
+- **Collapse closes tabs and remembers them.** If a tab has unsaved changes, you're asked to save first. Nothing is ever lost.
+
+Tab colors and badges need `workbench.editor.decorations.colors` and `workbench.editor.decorations.badges`, which are on by default.
 
 ## Settings
 
@@ -37,32 +53,39 @@ Tab colors and badges depend on `workbench.editor.decorations.colors` and `workb
 | `tabGroups.headerTabs` | `true` | Show header tabs |
 | `tabGroups.colorTabs` | `true` | Color grouped tab titles |
 | `tabGroups.badgeStyle` | `letter` | `letter`, `dot`, or `none` |
-| `tabGroups.joinByPosition` | `true` | Dragging a tab into or out of a group's block changes its membership |
+| `tabGroups.joinByPosition` | `true` | Dragging a tab into or out of a group's block changes which group it's in |
 
-## Security
+## Security & privacy
 
-- No runtime dependencies. The shipped VSIX contains only `dist/extension.js`, `media/`, and this README.
-- No network access, no telemetry, and file contents are never read. The extension stores only file URIs, group names and colors, in VS Code's own extension storage.
-- Header tabs are webviews with scripts and command links disabled, under a `default-src 'none'` CSP.
-- Runs in untrusted (Restricted Mode) workspaces, because it never executes or reads workspace code.
+- **No network access and no telemetry.** CI checks the source for network and process APIs on every commit.
+- **No runtime dependencies.** The published package contains only the bundled extension, its icons, this README, the changelog and the license, and CI verifies that too.
+- **Your files are never read.** TabFold stores only file paths, group names, colors and collapsed state, in VS Code's own extension storage on your machine.
+- **Locked-down header tabs.** They're webviews with scripts and command links disabled, under a `default-src 'none'` content security policy.
+- **Works in Restricted Mode** (untrusted workspaces), because it never runs workspace code.
+- **Open source** (MIT), so you can audit everything above.
 
-## Develop
+## Known limits
+
+- Terminals and other extensions' webview tabs can't be grouped, because VS Code doesn't expose them as files that can be reopened.
+- Grouping works in up to 8 editor splits. VS Code only offers focus commands for the first 8.
+- VS Code doesn't report tab clicks to extensions, so TabFold infers them:
+  - A header that becomes active right after a tab opens or closes is ignored.
+  - The default next/previous-editor shortcuts skip header tabs. Custom keybindings for those commands don't.
+  - Picking a header from the `Ctrl+Tab` list or with `Ctrl+1…9` counts as a click.
+
+## Feedback & contributing
+
+Bug reports and ideas are welcome in [GitHub Issues](https://github.com/skpaul82/TabFold/issues).
 
 ```sh
 npm install
-npm test                  # unit tests (ordering / store logic)
-npm run test:integration  # drives a real VS Code window (macOS path; set VSCODE_PATH elsewhere)
-npm run compile     # typecheck + bundle
-# F5 in VS Code → Extension Development Host
-npm run check:security  # no runtime deps, no network/child processes in src/
-npm run package     # → tabfold-0.1.0.vsix (runs tests + security check, then checks the VSIX contents)
-code --install-extension tabfold-0.1.0.vsix
+npm test                   # unit tests, no VS Code needed
+npm run test:integration   # drives a real VS Code window (set VSCODE_PATH outside macOS)
+npm run package            # typecheck, tests, security check, then build the VSIX
 ```
 
-## Known limits
-- Terminals and other extensions' webview tabs can't be grouped. The VS Code API doesn't expose them as reopenable resources.
-- Tabs are reordered in up to 8 editor splits (VS Code only has focus commands for the first 8).
-- Header clicks are inferred, because VS Code doesn't report clicks to extensions. A header that becomes active right after a tab opens or closes is ignored, and next/previous-editor shortcuts skip headers. Picking a header explicitly (Ctrl+Tab list, `Ctrl+1…9`) counts as a click. Custom keybindings for next/previous editor don't skip headers, but cycling quickly past a header won't toggle it.
+Press F5 in VS Code to try your changes in an Extension Development Host. Contributor notes are in [CLAUDE.md](CLAUDE.md).
 
-## Roadmap (v2)
-Settings Sync for groups, groups tied to Git branches, auto-grouping rules (glob → group), adding a group to AI chat context, a Recent Tabs view, a tree-by-folder view, and cycling between groups.
+## License
+
+[MIT](LICENSE)
