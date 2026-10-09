@@ -26,7 +26,7 @@ exports.run = async function () {
 };
 
 async function suite() {
-  const ext = vscode.extensions.getExtension('local.tabfold');
+  const ext = vscode.extensions.getExtension('skpaul82.tabfold');
   const { store, controller } = await ext.activate();
   await sleep(2500); // past the header-click startup guard
 
