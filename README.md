@@ -2,6 +2,8 @@
 
 **Browser-style tab groups for VS Code.** Group, name, color and collapse your editor tabs, the way tab groups work in Chrome. No network, no telemetry and no runtime dependencies, so you can trust it with work code.
 
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/skpaul82.tabfold?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=skpaul82.tabfold)
+[![Open VSX](https://img.shields.io/open-vsx/v/skpaul82/tabfold?label=Open%20VSX)](https://open-vsx.org/extension/skpaul82/tabfold)
 [![CI](https://github.com/skpaul82/TabFold/actions/workflows/ci.yml/badge.svg)](https://github.com/skpaul82/TabFold/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/skpaul82/TabFold/blob/main/LICENSE)
 
@@ -12,6 +14,12 @@
 - **Fold away what you're not working on.** Collapse a group and its tabs close. Expand it and they come back, in order.
 - **See your context at a glance.** Each group gets a header tab (`▾ API`) and its own color on the tab bar.
 - **Private by design.** TabFold never touches the network, never reads your files, and ships no third-party code. [Details below](#security--privacy).
+
+## Install
+
+- **VS Code:** [install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=skpaul82.tabfold), or run `code --install-extension skpaul82.tabfold`.
+- **Cursor, VSCodium, Windsurf and other Open VSX editors:** [install from Open VSX](https://open-vsx.org/extension/skpaul82/tabfold), or search for "TabFold" in the Extensions view.
+- **Manual:** download the `.vsix` from [GitHub Releases](https://github.com/skpaul82/TabFold/releases) and run **Extensions: Install from VSIX…**.
 
 ## Getting started
 
