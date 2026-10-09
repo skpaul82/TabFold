@@ -1,0 +1,49 @@
+# Pushing a tag like v0.1.1: build and check the VSIX, create the GitHub Release, publish to Open VSX.
+# The VS Code Marketplace stays a manual web upload of the VSIX attached to the release.
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Check the tag matches package.json
+        run: |
+          v=$(node -p "require('./package.json').version")
+          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "::error::Tag $GITHUB_REF_NAME doesn't match package.json version $v"; exit 1; }
+      - run: npm ci --ignore-scripts
+      - run: npm run package
+      - name: Release notes and checksum
+        run: |
+          v=${GITHUB_REF_NAME#v}
+          awk -v v="$v" 'index($0, "## " v " ") == 1 || $0 == "## " v {f=1; next} /^## / && f {exit} f' CHANGELOG.md > notes.md
+          [ -s notes.md ] || { echo "::error::CHANGELOG.md has no section for $v"; exit 1; }
+          sha256sum "tabfold-$v.vsix" > "tabfold-$v.vsix.sha256"
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=${GITHUB_REF_NAME#v}
+          gh release create "$GITHUB_REF_NAME" "tabfold-$v.vsix" "tabfold-$v.vsix.sha256" --title "TabFold $v" --notes-file notes.md
+      - name: Publish to Open VSX
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: |
+          if [ -z "$OVSX_PAT" ]; then echo "::warning::OVSX_PAT secret not set, so Open VSX was skipped"; exit 0; fi
+          npx --yes ovsx@1.2.0 publish "tabfold-${GITHUB_REF_NAME#v}.vsix" -p "$OVSX_PAT"
