@@ -1,0 +1,518 @@
+{
+  "name": "tabfold",
+  "displayName": "TabFold",
+  "description": "Group, name, color and collapse editor tabs like Chrome — on the tab bar and in the sidebar. No network, no telemetry, no runtime dependencies.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "icon": "media/icon.png",
+  "license": "MIT",
+  "preview": true,
+  "pricing": "Free",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skpaul82/TabFold.git"
+  },
+  "bugs": {
+    "url": "https://github.com/skpaul82/TabFold/issues"
+  },
+  "homepage": "https://github.com/skpaul82/TabFold#readme",
+  "keywords": [
+    "tabs",
+    "tab groups",
+    "group tabs",
+    "collapse tabs",
+    "organize tabs",
+    "tab manager",
+    "editor tabs",
+    "workspace",
+    "productivity",
+    "chrome tab groups",
+    "browser tab groups",
+    "privacy"
+  ],
+  "galleryBanner": {
+    "color": "#202124",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onWebviewPanel:tabGroups.header"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tabGroups",
+          "title": "Tab Groups",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "tabGroups": [
+        {
+          "id": "tabGroups.groups",
+          "name": "Groups",
+          "when": "config.tabGroups.placement != top"
+        },
+        {
+          "id": "tabGroups.saved",
+          "name": "Saved Groups",
+          "when": "config.tabGroups.placement != top"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "tabGroups.groups",
+        "contents": "No tab groups yet.\n[Group Current Tab](command:tabGroups.addTabToNewGroup)\nTip: right-click any editor tab → **Add Tab to New Group**, or press **Cmd/Ctrl+K G**."
+      },
+      {
+        "view": "tabGroups.saved",
+        "contents": "Save a group to reopen it later, even in another workspace."
+      }
+    ],
+    "commands": [
+      {
+        "command": "tabGroups.addTabToNewGroup",
+        "title": "Add Tab to New Group",
+        "category": "Tab Groups",
+        "icon": "$(add)"
+      },
+      {
+        "command": "tabGroups.addTabToGroup",
+        "title": "Add Tab to Group…",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.removeTabFromGroup",
+        "title": "Remove Tab from Group",
+        "category": "Tab Groups",
+        "icon": "$(close)"
+      },
+      {
+        "command": "tabGroups.editGroup",
+        "title": "Edit Group (Name & Color)…",
+        "category": "Tab Groups",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "tabGroups.toggleCollapse",
+        "title": "Collapse / Expand Group",
+        "category": "Tab Groups",
+        "icon": "$(fold)"
+      },
+      {
+        "command": "tabGroups.collapseOthers",
+        "title": "Collapse Other Groups",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.collapseAll",
+        "title": "Collapse All Groups",
+        "category": "Tab Groups",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "tabGroups.expandAll",
+        "title": "Expand All Groups",
+        "category": "Tab Groups",
+        "icon": "$(expand-all)"
+      },
+      {
+        "command": "tabGroups.ungroup",
+        "title": "Ungroup",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.closeGroup",
+        "title": "Close Group",
+        "category": "Tab Groups",
+        "icon": "$(close-all)"
+      },
+      {
+        "command": "tabGroups.switchGroup",
+        "title": "Switch Group…",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.saveGroup",
+        "title": "Save Group",
+        "category": "Tab Groups",
+        "icon": "$(save)"
+      },
+      {
+        "command": "tabGroups.restoreSaved",
+        "title": "Restore Saved Group",
+        "category": "Tab Groups",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "tabGroups.deleteSaved",
+        "title": "Delete Saved Group",
+        "category": "Tab Groups",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "tabGroups.resetAll",
+        "title": "Ungroup All Tabs",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.nextEditorSkipHeader",
+        "title": "Open Next Editor (Skip Group Headers)",
+        "category": "Tab Groups"
+      },
+      {
+        "command": "tabGroups.previousEditorSkipHeader",
+        "title": "Open Previous Editor (Skip Group Headers)",
+        "category": "Tab Groups"
+      }
+    ],
+    "menus": {
+      "editor/title/context": [
+        {
+          "command": "tabGroups.addTabToNewGroup",
+          "group": "1_tabgroups@1",
+          "when": "resource"
+        },
+        {
+          "command": "tabGroups.addTabToGroup",
+          "group": "1_tabgroups@2",
+          "when": "resource"
+        },
+        {
+          "command": "tabGroups.removeTabFromGroup",
+          "group": "1_tabgroups@3",
+          "when": "resource"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "tabGroups.addTabToNewGroup",
+          "when": "view == tabGroups.groups",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tabGroups.collapseAll",
+          "when": "view == tabGroups.groups",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tabGroups.expandAll",
+          "when": "view == tabGroups.groups",
+          "group": "navigation@3"
+        },
+        {
+          "command": "tabGroups.resetAll",
+          "when": "view == tabGroups.groups",
+          "group": "9_reset"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tabGroups.toggleCollapse",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "inline@1"
+        },
+        {
+          "command": "tabGroups.editGroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "inline@2"
+        },
+        {
+          "command": "tabGroups.closeGroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "inline@3"
+        },
+        {
+          "command": "tabGroups.editGroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "1_edit@1"
+        },
+        {
+          "command": "tabGroups.toggleCollapse",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "1_edit@2"
+        },
+        {
+          "command": "tabGroups.collapseOthers",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "1_edit@3"
+        },
+        {
+          "command": "tabGroups.saveGroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "2_save@1"
+        },
+        {
+          "command": "tabGroups.ungroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "3_close@1"
+        },
+        {
+          "command": "tabGroups.closeGroup",
+          "when": "view == tabGroups.groups && viewItem =~ /^group/",
+          "group": "3_close@2"
+        },
+        {
+          "command": "tabGroups.removeTabFromGroup",
+          "when": "view == tabGroups.groups && viewItem == member",
+          "group": "inline"
+        },
+        {
+          "command": "tabGroups.addTabToGroup",
+          "when": "view == tabGroups.groups && viewItem == ungrouped",
+          "group": "1_group@1"
+        },
+        {
+          "command": "tabGroups.addTabToNewGroup",
+          "when": "view == tabGroups.groups && viewItem == ungrouped",
+          "group": "1_group@2"
+        },
+        {
+          "command": "tabGroups.restoreSaved",
+          "when": "view == tabGroups.saved && viewItem == saved",
+          "group": "inline@1"
+        },
+        {
+          "command": "tabGroups.deleteSaved",
+          "when": "view == tabGroups.saved && viewItem == saved",
+          "group": "inline@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "tabGroups.removeTabFromGroup",
+          "when": "activeEditor"
+        },
+        {
+          "command": "tabGroups.restoreSaved",
+          "when": "false"
+        },
+        {
+          "command": "tabGroups.deleteSaved",
+          "when": "false"
+        },
+        {
+          "command": "tabGroups.nextEditorSkipHeader",
+          "when": "false"
+        },
+        {
+          "command": "tabGroups.previousEditorSkipHeader",
+          "when": "false"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "tabGroups.addTabToGroup",
+        "key": "ctrl+k g",
+        "mac": "cmd+k g"
+      },
+      {
+        "command": "tabGroups.switchGroup",
+        "key": "ctrl+k shift+g",
+        "mac": "cmd+k shift+g"
+      },
+      {
+        "command": "tabGroups.toggleCollapse",
+        "key": "ctrl+k alt+g",
+        "mac": "cmd+k alt+g"
+      },
+      {
+        "command": "tabGroups.nextEditorSkipHeader",
+        "key": "ctrl+pagedown",
+        "mac": "cmd+alt+right",
+        "when": "tabGroups.nextIsHeader && !terminalFocus"
+      },
+      {
+        "command": "tabGroups.nextEditorSkipHeader",
+        "key": "ctrl+pagedown",
+        "mac": "cmd+shift+]",
+        "when": "tabGroups.nextIsHeader && !terminalFocus"
+      },
+      {
+        "command": "tabGroups.previousEditorSkipHeader",
+        "key": "ctrl+pageup",
+        "mac": "cmd+alt+left",
+        "when": "tabGroups.prevIsHeader && !terminalFocus"
+      },
+      {
+        "command": "tabGroups.previousEditorSkipHeader",
+        "key": "ctrl+pageup",
+        "mac": "cmd+shift+[",
+        "when": "tabGroups.prevIsHeader && !terminalFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Tab Groups",
+      "properties": {
+        "tabGroups.placement": {
+          "type": "string",
+          "enum": [
+            "top+side",
+            "top",
+            "side"
+          ],
+          "enumDescriptions": [
+            "Show groups on the editor tab bar and in the sidebar.",
+            "Tab bar only (the sidebar view is hidden).",
+            "Sidebar only: tabs are not colored, reordered or given header tabs."
+          ],
+          "default": "top+side",
+          "description": "Where tab groups are shown."
+        },
+        "tabGroups.headerTabs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a small header tab (like Chrome's group chip) in front of each group. Click it to collapse or expand the group."
+        },
+        "tabGroups.colorTabs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Color grouped tab titles with their group color. Requires 'workbench.editor.decorations.colors'."
+        },
+        "tabGroups.badgeStyle": {
+          "type": "string",
+          "enum": [
+            "letter",
+            "dot",
+            "none"
+          ],
+          "default": "letter",
+          "description": "Badge shown on grouped tabs: the group's first letter, a dot, or nothing. Requires 'workbench.editor.decorations.badges'."
+        },
+        "tabGroups.joinByPosition": {
+          "type": "boolean",
+          "default": true,
+          "description": "Like Chrome: a tab dropped or opened between two tabs of a group joins it, and a tab dragged out of its group leaves it."
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "tabGroups.grey",
+        "description": "Grey tab group",
+        "defaults": {
+          "dark": "#BDC1C6",
+          "light": "#5F6368",
+          "highContrast": "#DADCE0",
+          "highContrastLight": "#3C4043"
+        }
+      },
+      {
+        "id": "tabGroups.blue",
+        "description": "Blue tab group",
+        "defaults": {
+          "dark": "#8AB4F8",
+          "light": "#1A73E8",
+          "highContrast": "#8AB4F8",
+          "highContrastLight": "#174EA6"
+        }
+      },
+      {
+        "id": "tabGroups.red",
+        "description": "Red tab group",
+        "defaults": {
+          "dark": "#F28B82",
+          "light": "#D93025",
+          "highContrast": "#F28B82",
+          "highContrastLight": "#A50E0E"
+        }
+      },
+      {
+        "id": "tabGroups.yellow",
+        "description": "Yellow tab group",
+        "defaults": {
+          "dark": "#FDD663",
+          "light": "#B06000",
+          "highContrast": "#FDD663",
+          "highContrastLight": "#8A4A00"
+        }
+      },
+      {
+        "id": "tabGroups.green",
+        "description": "Green tab group",
+        "defaults": {
+          "dark": "#81C995",
+          "light": "#1E8E3E",
+          "highContrast": "#81C995",
+          "highContrastLight": "#0D652D"
+        }
+      },
+      {
+        "id": "tabGroups.pink",
+        "description": "Pink tab group",
+        "defaults": {
+          "dark": "#FF8BCB",
+          "light": "#D01884",
+          "highContrast": "#FF8BCB",
+          "highContrastLight": "#9C166B"
+        }
+      },
+      {
+        "id": "tabGroups.purple",
+        "description": "Purple tab group",
+        "defaults": {
+          "dark": "#D7AEFB",
+          "light": "#A142F4",
+          "highContrast": "#D7AEFB",
+          "highContrastLight": "#681DA8"
+        }
+      },
+      {
+        "id": "tabGroups.cyan",
+        "description": "Cyan tab group",
+        "defaults": {
+          "dark": "#78D9EC",
+          "light": "#007B83",
+          "highContrast": "#78D9EC",
+          "highContrastLight": "#00565C"
+        }
+      },
+      {
+        "id": "tabGroups.orange",
+        "description": "Orange tab group",
+        "defaults": {
+          "dark": "#FCAD70",
+          "light": "#E8710A",
+          "highContrast": "#FCAD70",
+          "highContrastLight": "#A04A00"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "npm run typecheck && node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/*.test.ts\"",
+    "package": "npm run typecheck && npm test && npm run check:security && node esbuild.mjs --production && vsce package --no-dependencies && node scripts/check-security.mjs --vsix",
+    "check:security": "node scripts/check-security.mjs",
+    "icon": "node scripts/make-icon.mjs",
+    "test:integration": "node esbuild.mjs && node test-integration/run.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "1.90.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}

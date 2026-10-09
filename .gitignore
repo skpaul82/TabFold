@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.vsix
+# unzipped VSIX packages, VS Code test downloads, OS files
+tabfold-*/
+.vscode-test/
+.DS_Store
