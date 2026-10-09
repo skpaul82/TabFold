@@ -1,6 +1,6 @@
 {
   "name": "tabfold",
-  "displayName": "TabFold",
+  "displayName": "TabFold: Tab Groups",
   "description": "Group, name, color and collapse editor tabs like Chrome — on the tab bar and in the sidebar. No network, no telemetry, no runtime dependencies.",
   "version": "0.1.0",
   "publisher": "local",
